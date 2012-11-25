@@ -1,7 +1,7 @@
 from supy.defaults import *
 
 def mainTree() :
-    return ("/","tree")
+    return ("/","physics")
 
 def leavesToBlackList() :
     return []
@@ -14,6 +14,12 @@ def cppROOTDictionariesToGenerate() :
         ("ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<float>,ROOT::Math::DefaultCoordinateSystemTag>", "Math/Vector3D.h"),
         ("vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<float>,ROOT::Math::DefaultCoordinateSystemTag> >", "vector;Math/Vector3D.h"),
         ("ROOT::Math::PositionVector3D<ROOT::Math::Cartesian3D<float>,ROOT::Math::DefaultCoordinateSystemTag>", "Math/Point3D.h"),
+        ("vector<vector<int> >", "vector"),
+        ("vector<vector<float> >", "vector"),
+        ("vector<vector<vector<int> > >", "vector"),
+        ("vector<vector<vector<float> > >", "vector"),
+        ("vector<vector<unsigned int> >", "vector"),
+        ("vector<vector<string> >", "vector;string"),
         ]
 
 def cppFiles() :
