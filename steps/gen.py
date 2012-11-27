@@ -9,6 +9,33 @@ try:
 except ImportError:
     pdgLookupExists = False
 #####################################
+
+
+class PdgLookup:
+    def __init__(self) :
+        self.names = {
+            -1:'d', 1:'d',
+             -2:'u', 2:'u',
+             -3:'s', 3:'s',
+             -4:'c', 4:'c',
+             -5:'b', 5:'b',
+             -6:'t', 6:'t',
+             -11:'e', 11:'e',
+             -12:'ve', 12:'ve',
+             -13:'mu', 13:'mu',
+             -14:'vmu', 14:'vmu',
+             -15:'tau', 15:'tau',
+             -16:'vtau', 16:'vtau',
+             -21:'g', 21:'g',
+             -22:'gamma', 22:'gamma',
+             -23:'Z', 23:'Z',
+             -24:'W-', 24:'W+',
+             -25:'h', 25:'h',
+             -521:'B-',521:'B+',
+             -523:'B*-',523:'B*+',
+        }
+    def pdgid_to_name(self,id) : return self.names[id] if id in self.names else 'unknown'
+
 class genJetPrinter(analysisStep) :
 
     def __init__(self, cs = None) :
@@ -168,32 +195,31 @@ class particlePrinter(analysisStep) :
         self.minStatus=minStatus
         
     def uponAcceptance (self,eventVars) :
-
+        pdgLookupExists = True
+        pdgLookup = PdgLookup()
         self.sumP4.SetCoordinates(0.0,0.0,0.0,0.0)
 
-        mothers=set(eventVars["genMotherIndex"])
-        print "pthat: ",eventVars["genpthat"]
-        print "mothers: ",mothers
+        parents=set([p for pp in eventVars['mc_parents'] for p in pp])
+        #print "parents: ",parents
         print "-----------------------------------------------------------------------------------"
-        print " i  st    mo         id            name        E        pt       eta    phi    mass"
+        print " i  st   par         id            name        E        pt       eta    phi    mass"
         print "-----------------------------------------------------------------------------------"
 
         size=len(eventVars["genP4"])
         for iGen in range(size) :
 
             p4=eventVars["genP4"][iGen]
-            if p4.pt()<self.minPt :
-                continue
+            if p4.pt()<self.minPt : continue
 
-            status=eventVars["genStatus"][iGen]
-            if status<self.minStatus :
-                continue
+            status=eventVars['mc_status'][iGen]
+            if status<self.minStatus : continue
 
-            pdgId=eventVars["genPdgId"][iGen]
+            pars = [i for i in eventVars['mc_parents'][iGen]]
+            pdgId=eventVars['mc_pdgId'][iGen]
             outString=""
             outString+="%#2d"%iGen
             outString+=" %#3d"%status
-            outString+="  %#4d"%eventVars["genMotherIndex"][iGen]
+            outString+= str(pars).rjust(4) #"  %#4d"%eventVars['mc_parents'][iGen]
             outString+=" %#10d"%pdgId
             if pdgLookupExists : outString+=" "+pdgLookup.pdgid_to_name(pdgId).rjust(15)
             else :                 outString+="".rjust(16)
@@ -204,7 +230,7 @@ class particlePrinter(analysisStep) :
             outString+="  %#6.1f"%p4.mass()
             #outString+="  %#5.1f"%p4.mass()
         
-            if not (iGen in mothers) :
+            if not (iGen in parents) :
                 outString+="   non-mo"
         #        self.sumP4+=self.oneP4
         #        #outString2="non-mo P4 sum".ljust(37)
