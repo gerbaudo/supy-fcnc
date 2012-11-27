@@ -31,8 +31,12 @@ class PdgLookup:
              -23:'Z', 23:'Z',
              -24:'W-', 24:'W+',
              -25:'h', 25:'h',
+             -511:'B0bar',511:'B0',
+             -513:'B*0bar',513:'B*0',
              -521:'B-',521:'B+',
              -523:'B*-',523:'B*+',
+             -531:'B0sbar',531:'B0s',
+             -533:'B*0sbar',533:'B*0s',
         }
     def pdgid_to_name(self,id) : return self.names[id] if id in self.names else 'unknown'
 
