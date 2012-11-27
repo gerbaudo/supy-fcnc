@@ -1,4 +1,4 @@
-import supy, ROOT as r
+import calculables, steps, supy, ROOT as r
 
 class genLook(supy.analysis) :
 
@@ -8,6 +8,8 @@ class genLook(supy.analysis) :
         shaeta, sheta = supy.steps.histos.absEta, supy.steps.histos.eta
         stepsList = [
             supy.steps.printer.progressPrinter(),
+            supy.steps.histos.multiplicity("genP4", max=50),
+            steps.gen.particlePrinter(),
 #            shv('n_jets',20, 0, 20),
 #            shv('top_ene',20,0,1e4),
 #            shpt("top_P4", 100,1,201),
@@ -27,7 +29,8 @@ class genLook(supy.analysis) :
     def listOfCalculables(self,config) :
 #        kin = calculables.kinematic
         return ( supy.calculables.zeroArgs(supy.calculables) +
-                 [supy.calculables.other.fixedValue('Two',2) ]
+                 [supy.calculables.other.fixedValue('Two',2) ] +
+                 [calculables.gen.genP4(),]
 #                 +[calculables.other.Indices(collection=("jet_",""))]
 #                 +[kin.P4(collection = ("jet_",""))]
 #                 +[kin.singleP4(collection = ("top_",""))]
@@ -46,7 +49,7 @@ class genLook(supy.analysis) :
 
     def listOfSamples(self,config) :
         test = True #False
-        nEventsMax= 1000 if test else None
+        nEventsMax= 10 if test else None
 
         return (
             supy.samples.specify(names = "tHc", nEventsMax=nEventsMax, color = r.kBlack, markerStyle = 20)
