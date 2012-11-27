@@ -9,21 +9,9 @@ class genLook(supy.analysis) :
         stepsList = [
             supy.steps.printer.progressPrinter(),
             supy.steps.histos.multiplicity("genP4", max=50),
-            steps.gen.particlePrinter(),
-#            shv('n_jets',20, 0, 20),
-#            shv('top_ene',20,0,1e4),
-#            shpt("top_P4", 100,1,201),
-#            shpt("jet_P4", 100,1,201, indices = 'Indicesjet_'),
-#            sheta("top_P4", 100,-10,10),
-#            sheta("antitop_P4", 100,-10,10),
-#            shaeta("top_P4", 100,10,10),
-#            shaeta("antitop_P4", 100,10,10),
-#            shpt('TtbarP4', 50,0,+0.05e-4),
-#            shmass('TtbarP4', 100,0,2e3),
-#            shv('BoostZ',100, -1, +1),
-#            shv('DeltaAbsRapidities',50, -3, +3),
+            #steps.gen.particlePrinter(),
+            steps.gen.ttbarPrinter(),
             ]
-#        dyh = steps.histos.DeltaAbsYHisto
         return stepsList
 
     def listOfCalculables(self,config) :
@@ -31,14 +19,6 @@ class genLook(supy.analysis) :
         return ( supy.calculables.zeroArgs(supy.calculables) +
                  [supy.calculables.other.fixedValue('Two',2) ] +
                  [calculables.gen.genP4(),]
-#                 +[calculables.other.Indices(collection=("jet_",""))]
-#                 +[kin.P4(collection = ("jet_",""))]
-#                 +[kin.singleP4(collection = ("top_",""))]
-#                 +[kin.singleP4(collection = ("antitop_",""))]
-#                 +[kin.TtbarP4(),
-#                   kin.AbsSumRapidities(),
-#                   kin.DeltaAbsRapidities(),]
-#                 +[kin.BoostZ()]
                  )
 
     def listOfSampleDictionaries(self) :
@@ -61,6 +41,4 @@ class genLook(supy.analysis) :
         org.scale(lumiToUseInAbsenceOfData=1.0e-3) # /pb
         supy.plotter(org,
                      pdfFileName = self.pdfFileName(org.tag),
-                     #samplesForRatios = ('SM', ['A2', 'A4', 'A6', 'P3']),
-                     #sampleLabelsForRatios = ('SM','BSM'),
                      ).plotAll()
