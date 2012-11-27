@@ -1,5 +1,19 @@
 from supy import wrappedChain,utils,calculables
 import ROOT as r
+
+class genP4(wrappedChain.calculable) :
+    @property
+    def name(self) : return "genP4"
+    def __init__(self, collection=('mc_','')):
+        self.p4=utils.LorentzV
+        self.fixes = collection
+        self.stash(["E", "pt", "eta", "phi", "m"])
+    def update(self, _) :
+        self.value = [self.p4(pt, eta, phi, m) for pt,eta,phi,m in zip(self.source[self.pt],
+                                                                       self.source[self.eta],
+                                                                       self.source[self.phi],
+                                                                       self.source[self.m])]
+
 ###############################
 #class genSumP4(wrappedChain.calculable) :
 #    def update(self,_) :
