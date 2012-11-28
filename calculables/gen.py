@@ -53,24 +53,60 @@ class genIndices(wrappedChain.calculable) :
     @property
     def name(self) : return "genIndices" + self.label
 
-    def __init__(self, pdgs = [], label = None, status = [], motherPdgs = []) :
+    def __init__(self, pdgs = [], label = None, status = [], parentPdgs = [], parentIndexLabel='',maxLen=None) :
         self.label = label
         self.PDGs = frozenset(pdgs)
         self.status = frozenset(status)
-        self.motherPdgs = frozenset(motherPdgs)
+        self.parentPdgs = frozenset(parentPdgs)
+        self.parentIndexLabel = parentIndexLabel
+        self.maxLen = maxLen
         self.moreName = "; ".join(["pdgId in %s" %str(list(self.PDGs)),
                                    "status in %s"%str(list(self.status)),
-                                   "motherPdg in %s"%str(list(self.motherPdgs))
+                                   "parentPdgs in %s"%str(list(self.parentPdgs)),
+                                   "parentIndexLabel in %s"%self.parentIndexLabel,
+                                   "maxLen %s"%str(self.maxLen),
                                    ])
-
     def update(self,_) :
-        pdg = self.source["genPdgId"]
-        status = self.source["genStatus"]
-        motherPdg = self.source["genMotherPdgId"]
+        pdg = self.source['mc_pdgId']
+        status = self.source['mc_status']
+        parents = self.source['mc_parent_index']
+        parentsPdgs = [[pdg[p] for p in par] for par in parents]
+        parentsIndices = self.source[self.parentIndexLabel] if self.parentIndexLabel else []
+
         self.value = filter( lambda i: ( (not self.PDGs) or (pdg.at(i) in self.PDGs) ) and \
                                  ( (not self.status) or (status.at(i) in self.status) ) and \
-                                 ( (not self.motherPdgs) or (motherPdg.at(i) in self.motherPdgs) ),
+                                 ( (not self.parentPdgs) or any(p in self.parentPdgs for p in parentsPdgs[i])) and \
+                                 ( (not self.parentIndexLabel) or any(p in parents[i] for p in parentsIndices))
+                                 ,
                              range(pdg.size()) )
+        if self.maxLen : self.value = self.value[:self.maxLen] # trim if needed
+
+class smTopIndex(wrappedChain.calculable) :
+    def __init__(self) :
+        self.PDGs = frozenset([-6,+6])
+        self.childrenPdgs = frozenset([-5,5,-24,24])
+        self.moreName = "; ".join(["pdgId in %s" %str(list(self.PDGs)),
+                                   "childrenPdgs in %s"%str(list(self.childrenPdgs))])
+    def update(self,_) :
+        pdg = self.source['mc_pdgId']
+        childrenIndices = self.source['mc_child_index']
+        childrenPdgs = [[pdg[c] for c in chi] for chi in childrenIndices]
+        self.value = filter( lambda i: ( (not self.PDGs) or (pdg.at(i) in self.PDGs) ) and \
+                                 ( (not self.childrenPdgs) or frozenset(childrenPdgs[i]).issubset(self.childrenPdgs)),
+                             range(pdg.size()) )
+class fcncTopIndex(wrappedChain.calculable) :
+    def __init__(self) :
+        self.PDGs = frozenset([-6,+6])
+        self.moreName = "; ".join(["pdgId in %s" %str(list(self.PDGs)), ])
+    def update(self,_) :
+        pdg = self.source['mc_pdgId']
+        childrenIndices = self.source['mc_child_index']
+        childrenPdgs = [[pdg[c] for c in chi] for chi in childrenIndices]
+        hPdg = 25
+        self.value = filter( lambda i: ( (not self.PDGs) or (pdg.at(i) in self.PDGs) ) and \
+                                 (hPdg in childrenPdgs[i]),
+                             range(pdg.size()) )
+
 
 #class genIndicesPtSorted(wrappedChain.calculable) :
 #    @property
@@ -163,7 +199,7 @@ class genParticleCounter(wrappedChain.calculable) :
         for key in self.pdgToCategory :
             if self.pdgToCategory[key] in someList :
                 self.pdgToCategory[key]=someLabel
-        
+
     def printDict(self,someDict) :
         for key in someDict :
             print key,someDict[key]
