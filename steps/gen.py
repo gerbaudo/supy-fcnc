@@ -113,13 +113,18 @@ class ttbarPrinter(analysisStep) :
         iGs = filter(lambda i: ids[i]==21, range(max(iTop,iTbar)+1,len(ids)))
         iTopChildren = [i for i,pars in enumerate(parentIds) if 6 in pars or -6 in pars]
         iWChildren = [i for i,pars in enumerate(parentIds) if 24 in pars or -24 in pars]
-
-        # filter(lambda i : any(p in [-6,6] for i,parIds in enumerate(parentIds) for p in parIds), range(len(ids))) #range(max(iTop,iTbar)+1,len(ids)))
-        print '-'*50
-        print '\t'.join(['item','parents','pt','m','eta','phi'])
+        iHChildren = [i for i,pars in enumerate(parentIds) if 25 in pars]
+        width=15
+        fieldNames = ['item','parents','parentIds','pt','eta','phi','status']
+        print '-'*width*(len(fieldNames))
+        print ''.join([("%s"%n).rjust(width) for n in fieldNames])
         print
-        for i in [iTop,iTbar]+iTopChildren+iWChildren :
-            print '\t'.join(str(d)[:10] for d in ["%d(%s)"%(i,pdg.pdgid_to_name(ids[i])), list(parentIds[i]), p4s[i].pt(), '-', p4s[i].eta(), p4s[i].phi(), status[i]])
+        for i in [iTop,iTbar]+iTopChildren+iWChildren+iHChildren :
+            print ''.join((("%s"%d).rjust(width) for d in ["%d (%s)"%(i,pdg.pdgid_to_name(ids[i])),
+                                                           list(parents[i]),
+                                                           list(parentIds[i])]\
+                               +["%.3f"%v for v in [p4s[i].pt(),p4s[i].eta(), p4s[i].phi()]]\
+                               +[status[i]]))
         print
 
 #####################################
