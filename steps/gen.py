@@ -71,7 +71,8 @@ class particlePrinter(analysisStep) :
         print "-----------------------------------------------------------------------------------"
 
         size=len(eventVars["genP4"])
-        for iGen in range(size) :
+        maxPrintSize=50
+        for iGen in range(min([maxPrintSize,size])) :
 
             p4=eventVars["genP4"][iGen]
             if p4.pt()<self.minPt : continue
