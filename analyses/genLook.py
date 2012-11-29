@@ -6,6 +6,8 @@ class genLook(supy.analysis) :
         shv = supy.steps.histos.value
         shpt, shmass = supy.steps.histos.pt, supy.steps.histos.mass
         shaeta, sheta = supy.steps.histos.absEta, supy.steps.histos.eta
+        pi = r.TMath.Pi()
+        MeV2GeV = 1.0e+3
         def dropInd(idxName) :
             return idxName.replace('Index','').replace('genIndices','').replace('Indices','')
         indices = ['smTopIndex','fcncTopIndex']+["genIndices%s"%i for i in
@@ -23,13 +25,19 @@ class genLook(supy.analysis) :
             #supy.steps.printer.printstuff(['fcncTopIndex','genIndiceshiggs','genIndicesW_tChild','genIndicesq_tChild']),
             supy.steps.filters.multiplicity('genIndicesb_hChild',min=2,max=2),
             supy.steps.filters.multiplicity('genIndicesl_WChild',min=1,max=1),
-            ] + \
-            [supy.steps.histos.pt("genP4",  20, 0.0, 300.0*1.e3, indices = ii, index = 0, xtitle = dropInd(ii))
-             for ii in indices] + \
-            [supy.steps.histos.eta("genP4",  20, -4.0, +4.0, indices = ii, index = 0, xtitle = dropInd(ii))
-             for ii in indices] + \
-            [supy.steps.histos.phi("genP4",  20, -4.0, +4.0, indices = ii, index = 0, xtitle = dropInd(ii))
-             for ii in indices]
+            ]
+        stepsList+=[supy.steps.histos.pt("genP4",
+                                         20, 0.0, 300*MeV2GeV,
+                                         indices = ii, index = 0, xtitle = dropInd(ii))
+                    for ii in indices]
+        stepsList+=[supy.steps.histos.eta("genP4",
+                                          20, -4.0, +4.0,
+                                          indices = ii, index = 0, xtitle = dropInd(ii))
+                    for ii in indices]
+        stepsList+=[supy.steps.histos.phi("genP4",
+                                          20, -pi, +pi,
+                                          indices = ii, index = 0, xtitle = dropInd(ii))
+                    for ii in indices]
         return stepsList
 
     def listOfCalculables(self,config) :
