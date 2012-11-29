@@ -14,6 +14,17 @@ class genP4(wrappedChain.calculable) :
                                                                        self.source[self.phi],
                                                                        self.source[self.m])]
 
+class p4Item(wrappedChain.calculable) :
+    @property
+    def name(self) :
+        return self.indexLabel.replace('genIndices','').replace('Index','')+"P4"
+    def __init__(self, indexLabel):
+        self.indexLabel = indexLabel
+    def update(self, _) :
+        indices = self.source[self.indexLabel]
+        assert len(indices) == 1,"p4Item '%s' : should have one index only, found %s"%(self.indexLabel,str(indices))
+        self.value = self.source['genP4'][indices[0]]
+
 ###############################
 #class genSumP4(wrappedChain.calculable) :
 #    def update(self,_) :
