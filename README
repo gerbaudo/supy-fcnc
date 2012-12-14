@@ -1,3 +1,4 @@
+
 git clone git://github.com/<user>/supy-fcnc             # clone repo: <user> can be davidegerbaudo or a forking user
 cd supy-fcnc
 git clone git://github.com/elaird/supy                  # checkout supy dependence
@@ -6,3 +7,20 @@ git clone git://github.com/elaird/supy                  # checkout supy dependen
 export PYTHONPATH=$PYTHONPATH:`pwd`                     # add directory containing supy to your python path
 export PATH=$PATH:`pwd`/supy/bin                        # optionally add to your path
 supy analyses/basicExample.py --loop 1                  # run the example (the example input files are located on AFS)
+
+
+# for ref: branch names
+mc_n      : Int_t Number of ntuple rows.
+mc_E      : vector<float>
+mc_pt     : vector<float>
+mc_m      : vector<float>
+mc_eta    : vector<float>
+mc_phi    : vector<float>
+mc_status : vector<int>
+mc_barcode : vector<int>
+mc_pdgId  : vector<int>
+mc_charge : vector<float>
+mc_parents : vector<vector<int> >
+mc_children : vector<vector<int> >
+mc_child_index : vector<vector<int> > Index in mc_
+mc_parent_index : vector<vector<int> > Index in mc_
