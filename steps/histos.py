@@ -37,7 +37,7 @@ class deltaPhi(analysisStep) :
     def uponAcceptance(self, eventVars) :
         p4s = eventVars[self.collP4]
         p1,p2 = p4s[eventVars[self.indexLabel1][0]], p4s[eventVars[self.indexLabel2][0]]
-        self.book.fill(phi_mpi_pi(r.Math.VectorUtil.DeltaR(p1,p2)), self.hName, self.N, self.low, self.up, title=self.title)
+        self.book.fill(abs(phi_mpi_pi(r.Math.VectorUtil.DeltaPhi(p1,p2))), self.hName, self.N, self.low, self.up, title=self.title)
 
 class deltaR(analysisStep) :
     def __init__(self, indexLabel1='', indexLabel2='',title="#Delta R",
