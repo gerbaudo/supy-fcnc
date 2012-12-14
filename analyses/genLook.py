@@ -38,6 +38,21 @@ class genLook(supy.analysis) :
                                           20, -pi, +pi,
                                           indices = ii, index = 0, xtitle = dropInd(ii))
                     for ii in indices]
+        drBetween = [('q_tChild','l_WChild'),
+                     ('b_tChild','l_WChild'),
+                     ]
+        ll = 'genIndices'
+        stepsList+=[steps.histos.deltaR(ll+p1,ll+p2,
+                                        '#Delta R('+dropInd(p1)+', '+dropInd(p2)+')')
+                    for (p1,p2) in drBetween]
+        dphiBetween = [('q_tChild','l_WChild'),
+                       ('b_tChild','l_WChild'),
+                       ('b_hChild','bbar_hChild')
+                       ]
+        stepsList+=[steps.histos.deltaPhi(ll+p1,ll+p2,
+                                        '#Delta #phi('+dropInd(p1)+', '+dropInd(p2)+')',
+                                          low=0.)
+                    for (p1,p2) in dphiBetween]
         return stepsList
 
     def listOfCalculables(self,config) :
@@ -72,15 +87,15 @@ class genLook(supy.analysis) :
     def listOfSampleDictionaries(self) :
         exampleDict = supy.samples.SampleHolder()
         baseDir = '/home/gerbaudo/physics/atlas/fcnc/data/user.burdin.NTUP_TOP_ttbar_hqwb_109999_protos6000w2allLeptons_sample1.121020094657/'
-        exampleDict.add("tHc", 'utils.io.fileListFromDisk("%s")'%baseDir,   xs = 1.0e+5 ) # pb
+        exampleDict.add("tHq", 'utils.io.fileListFromDisk("%s")'%baseDir,   xs = 1.0e+5 ) # pb
         return [exampleDict]
 
     def listOfSamples(self,config) :
-        test = True #False
+        test = False #True
         nEventsMax= 10 if test else None
 
         return (
-            supy.samples.specify(names = "tHc", nEventsMax=nEventsMax, color = r.kBlack, markerStyle = 20)
+            supy.samples.specify(names = "tHq", nEventsMax=nEventsMax, color = r.kBlack, markerStyle = 20)
             )
 
     def conclude(self,pars) :
