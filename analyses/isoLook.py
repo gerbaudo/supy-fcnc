@@ -9,13 +9,18 @@ class isoLook(supy.analysis) :
                     }
         lepton = self.vary()
         fieldsLepton =    ['name', 'ptMin', 'etaMax',   'isoVar', 'isoType']
-        muonParameters =  ['muon',      10,      2.4, 'ptcone30', 'relative']
-        lepton['mujets'] = dict(zip(fieldsLepton, muonParameters))
-        lepton['mujets']['isoVars'] = ['etcone20', 'ptcone30']
+        muonParameters =  ['muon',      20,      2.4, 'ptcone30', 'relative']
+        eleParameters  =  ['ele',       20,      2.4, '',         '']
+#         lepton['mujets'] = dict(zip(fieldsLepton, muonParameters))
+#         lepton['mujets']['isoVars'] = ['etcone20', 'ptcone30']
+        lepton['ejets'] = dict(zip(fieldsLepton, eleParameters))
+        lepton['ejets']['isoVars'] = ['Etcone20', 'Etcone20_pt_corrected', 'ptcone30']
         #leptons['eljets'] = dict(zip(fieldsLepton, ['electron',  10,      2.4, '??',       'relative']))
 
         return {'objects'  : objects, 'lepton'   : lepton,
-                'muon' : dict(zip(fieldsLepton, muonParameters)), 'minJetPt' : 10.0,
+                'muon':  dict(zip(fieldsLepton, muonParameters)),
+                'ele' :  dict(zip(fieldsLepton, eleParameters)),
+                'minJetPt' : 10.0,
             }
     def listOfSteps(self,config) :
         ss = supy.steps
@@ -41,9 +46,12 @@ class isoLook(supy.analysis) :
         cg, cm = calculables.gen, calculables.muon
         objects = config['objects']
         muon = config['muon']
+        ele = config['ele']
         lcals =  supy.calculables.zeroArgs(supy.calculables)
         lcals += [cm.Indices(objects['muon'], muon['ptMin'], muon['etaMax'])]
         lcals += supy.calculables.fromCollections(calculables.muon, [objects['muon'],])
+        lcals += [cm.Indices(objects['ele'], ele['ptMin'], ele['etaMax'])]
+        lcals += supy.calculables.fromCollections(calculables.electron, [objects['ele'],])
 
         return lcals
 
