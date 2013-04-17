@@ -50,13 +50,17 @@ class isoLook(supy.analysis) :
         return [samples.localTmp]
 
     def listOfSamples(self,config) :
-        test = True #False
-        nEventsMax= 10 if test else None
+        test = False #True
+        nEventsMax= 1000 if test else None
         samples = ['tt-af',  'tt-fs',
                    'tHu-af', 'tHu-fs',
                    'tHb-af', 'tHb-fs',]
         return (
-            supy.samples.specify(names ='tt-af', nEventsMax=nEventsMax, color = r.kBlack, markerStyle = 20)
+            supy.samples.specify(names ='tt-fs', nEventsMax=nEventsMax, color = r.kBlack, markerStyle = 20)
+            +supy.samples.specify(names ='tt-af', nEventsMax=nEventsMax, color = r.kRed)
+            +supy.samples.specify(names ='tHu-af', nEventsMax=nEventsMax, color = r.kBlue)
+            +supy.samples.specify(names ='tHu-fs', nEventsMax=nEventsMax, color = r.kCyan)
+
             )
 
     def conclude(self,pars) :
