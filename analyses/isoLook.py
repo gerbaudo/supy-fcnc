@@ -11,7 +11,9 @@ class isoLook(supy.analysis) :
         fieldsLepton =    ['name', 'ptMin', 'etaMax',   'isoVar', 'isoType']
         muonParameters =  ['muon',      10,      2.4, 'ptcone30', 'relative']
         lepton['mujets'] = dict(zip(fieldsLepton, muonParameters))
+        lepton['mujets']['isoVars'] = ['etcone20', 'ptcone30']
         #leptons['eljets'] = dict(zip(fieldsLepton, ['electron',  10,      2.4, '??',       'relative']))
+
         return {'objects'  : objects, 'lepton'   : lepton,
                 'muon' : dict(zip(fieldsLepton, muonParameters)), 'minJetPt' : 10.0,
             }
@@ -23,10 +25,14 @@ class isoLook(supy.analysis) :
         pi = r.TMath.Pi()
         MeV2GeV = 1.0e+3
         objects = config['objects']
+        isoVars = config['lepton']['isoVars']
+        leptonObj = objects[config['lepton']['name']]
         lsteps = []
         lsteps += [ss.printer.progressPrinter()]
         #lsteps += [ss.printer.printstuff(['Indices'.join(objects['muon'])])]
-        lsteps += [ss.histos.multiplicity('Indices'.join(objects['muon']), max=50),]
+        lsteps += [ss.filters.multiplicity('Indices'.join(leptonObj), min=1),]
+        lsteps += [shv(iv.join(leptonObj), 25, -4.*MeV2GeV, 6.*MeV2GeV, 'Indices'.join(leptonObj))
+                   for iv in isoVars]
 
         return lsteps
 
@@ -35,7 +41,7 @@ class isoLook(supy.analysis) :
         objects = config['objects']
         muon = config['muon']
         lcals =  supy.calculables.zeroArgs(supy.calculables)
-        lcals += [cm.Indices(objects['muon'], muon['ptMin'])]
+        lcals += [cm.Indices(objects['muon'], muon['ptMin'], muon['etaMax'])]
         lcals += supy.calculables.fromCollections(calculables.muon, [objects['muon'],])
 
         return lcals
