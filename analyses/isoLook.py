@@ -69,4 +69,7 @@ class isoLook(supy.analysis) :
         org.scale(lumiToUseInAbsenceOfData=1.0e-3) # /pb
         supy.plotter(org,
                      pdfFileName = self.pdfFileName(org.tag),
+                     doLog=False,
+                     blackList = ['lumiHisto','xsHisto','nJobsHisto',],
+                     samplesForRatios=('tt-fs',['tt-af','tHu-af','tHu-fs']),
                      ).plotAll()
