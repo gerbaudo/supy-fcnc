@@ -1,4 +1,4 @@
-import calculables, steps, supy, ROOT as r
+import calculables, samples, steps, supy, ROOT as r
 
 class isoLook(supy.analysis) :
     def parameters(self) :
@@ -41,18 +41,16 @@ class isoLook(supy.analysis) :
         return lcals
 
     def listOfSampleDictionaries(self) :
-        exampleDict = supy.samples.SampleHolder()
-        baseDir = '/home/gerbaudo/physics/atlas/fcnc/data/user.burdin.NTUP_TOP_ttbar_hqwb_109999_protos6000w2allLeptons_sample1.121020094657/'
-        baseDir = '/tmp/gerbaudo/iso-2013-04-16/mc12_8TeV.105200.McAtNloJimmy_CT10_ttbar_LeptonFilter.merge.NTUP_TOP.e1513_a159_a171_r3549_p1269/'
-        exampleDict.add("tHq", 'utils.io.fileListFromDisk("%s")'%baseDir,   xs = 1.0e+5 ) # pb
-        return [exampleDict]
+        return [samples.localTmp]
 
     def listOfSamples(self,config) :
         test = True #False
         nEventsMax= 10 if test else None
-
+        samples = ['tt-af',  'tt-fs',
+                   'tHu-af', 'tHu-fs',
+                   'tHb-af', 'tHb-fs',]
         return (
-            supy.samples.specify(names = "tHq", nEventsMax=nEventsMax, color = r.kBlack, markerStyle = 20)
+            supy.samples.specify(names ='tt-af', nEventsMax=nEventsMax, color = r.kBlack, markerStyle = 20)
             )
 
     def conclude(self,pars) :
