@@ -2,6 +2,7 @@ import calculables, samples, steps, supy, ROOT as r
 
 class isoLook(supy.analysis) :
     def parameters(self) :
+        GeV=1000.
         objects =  {'jet'  : ('jet_AntiKt4LCTopo_',''),
                     'met'  : ('MET_RefFinal_STVF_',''),
                     'muon' : ('mu_staco_',''),
@@ -9,10 +10,10 @@ class isoLook(supy.analysis) :
                     }
         lepton = self.vary()
         fieldsLepton =    ['name', 'ptMin', 'etaMax',   'isoVar', 'isoType']
-        muonParameters =  ['muon',      20,      2.4, 'ptcone30', 'relative']
-        eleParameters  =  ['ele',       20,      2.4, '',         '']
-#         lepton['mujets'] = dict(zip(fieldsLepton, muonParameters))
-#         lepton['mujets']['isoVars'] = ['etcone20', 'ptcone30']
+        muonParameters =  ['muon',  20*GeV,      2.4, 'ptcone30', 'relative']
+        eleParameters  =  ['ele',   20*GeV,      2.4, '',         '']
+        lepton['mujets'] = dict(zip(fieldsLepton, muonParameters))
+        lepton['mujets']['isoVars'] = ['etcone20', 'ptcone30']
         lepton['ejets'] = dict(zip(fieldsLepton, eleParameters))
         lepton['ejets']['isoVars'] = ['Etcone20', 'Etcone20_pt_corrected', 'ptcone30']
         #leptons['eljets'] = dict(zip(fieldsLepton, ['electron',  10,      2.4, '??',       'relative']))
@@ -20,7 +21,7 @@ class isoLook(supy.analysis) :
         return {'objects'  : objects, 'lepton'   : lepton,
                 'muon':  dict(zip(fieldsLepton, muonParameters)),
                 'ele' :  dict(zip(fieldsLepton, eleParameters)),
-                'minJetPt' : 10.0,
+                'minJetPt' : 10.0*GeV,
             }
     def listOfSteps(self,config) :
         ss = supy.steps
@@ -37,7 +38,7 @@ class isoLook(supy.analysis) :
         #lsteps += [ss.printer.printstuff(['Indices'.join(objects['muon'])])]
         lsteps += [ss.filters.multiplicity('Indices'.join(leptonObj), min=1),]
         lsteps += [ss.histos.multiplicity('Indices'.join(leptonObj), 10),]
-        lsteps += [shv(iv.join(leptonObj), 25, -4.*MeV2GeV, 6.*MeV2GeV, 'Indices'.join(leptonObj))
+        lsteps += [shv(iv.join(leptonObj), 25, -4.*MeV2GeV, 26.*MeV2GeV, 'Indices'.join(leptonObj))
                    for iv in isoVars]
 
         return lsteps
