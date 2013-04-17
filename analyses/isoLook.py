@@ -31,6 +31,7 @@ class isoLook(supy.analysis) :
         lsteps += [ss.printer.progressPrinter()]
         #lsteps += [ss.printer.printstuff(['Indices'.join(objects['muon'])])]
         lsteps += [ss.filters.multiplicity('Indices'.join(leptonObj), min=1),]
+        lsteps += [ss.histos.multiplicity('Indices'.join(leptonObj), 10),]
         lsteps += [shv(iv.join(leptonObj), 25, -4.*MeV2GeV, 6.*MeV2GeV, 'Indices'.join(leptonObj))
                    for iv in isoVars]
 
